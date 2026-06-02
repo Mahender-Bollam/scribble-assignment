@@ -27,16 +27,19 @@ viewer-aware response shaping.
 **Project Type**: Web application (monorepo with backend + frontend)
 
 **Performance Goals**:
+
 - Keep lobby/game polling behavior responsive at current 2-second cadence
 - Keep snapshot projection deterministic for identical room/viewer inputs
 
 **Constraints**:
+
 - No WebSockets or push channels
 - No database/persistence layer
 - No authentication/session features
 - No non-deterministic role/word assignment for the same start state
 
 **Scale/Scope**:
+
 - Local assignment usage with small rooms (2 to several participants)
 - Single-round start initialization and visibility rules only
 
@@ -122,3 +125,10 @@ consumption for drawer/guesser visibility.
 ## Complexity Tracking
 
 No constitution violations identified; no complexity exceptions required.
+
+## Implementation Validation Log
+
+- `cd backend && npm run build`: PASS
+- `cd frontend && npm run build`: PASS
+- `cd backend && npm test`: PASS
+- `cd frontend && npm test`: PASS

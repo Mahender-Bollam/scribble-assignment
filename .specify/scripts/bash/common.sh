@@ -138,6 +138,25 @@ check_feature_branch() {
     local branch
     branch=$(spec_kit_effective_branch_name "$raw")
 
+    # Allow explicitly whitelisted long-lived branches for teams that keep all
+    # spec-kit work on one branch (for example: scribble-lab).
+    if [[ "$branch" == "scribble-lab" ]]; then
+        return 0
+    fi
+
+    # Optional override list (comma-separated):
+    # SPECIFY_ALLOWED_BRANCHES="scribble-lab,main"
+    if [[ -n "${SPECIFY_ALLOWED_BRANCHES:-}" ]]; then
+        local allow_entry
+        IFS=',' read -r -a _allow_list <<< "$SPECIFY_ALLOWED_BRANCHES"
+        for allow_entry in "${_allow_list[@]}"; do
+            allow_entry="${allow_entry//[[:space:]]/}"
+            if [[ -n "$allow_entry" ]] && [[ "$branch" == "$allow_entry" ]]; then
+                return 0
+            fi
+        done
+    fi
+
     # Accept sequential prefix (3+ digits) but exclude malformed timestamps
     # Malformed: 7-or-8 digit date + 6-digit time with no trailing slug (e.g. "2026031-143022" or "20260319-143022")
     local is_sequential=false
@@ -146,7 +165,8 @@ check_feature_branch() {
     fi
     if [[ "$is_sequential" != "true" ]] && [[ ! "$branch" =~ ^[0-9]{8}-[0-9]{6}- ]]; then
         echo "ERROR: Not on a feature branch. Current branch: $raw" >&2
-        echo "Feature branches should be named like: 001-feature-name, 1234-feature-name, or 20260319-143022-feature-name" >&2
+        echo "Feature branches should be named like: 001-feature-name, 1234-feature-name, or 20260319-143022-feature-name." >&2
+        echo "Allowed long-lived branch: scribble-lab (or set SPECIFY_ALLOWED_BRANCHES)." >&2
         return 1
     fi
 

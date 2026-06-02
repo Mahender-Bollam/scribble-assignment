@@ -12,8 +12,8 @@
 
 **Purpose**: Align feature artifacts and API contract baseline before implementation.
 
-- [ ] T001 Validate and finalize feature contract details in specs/002-game-start-drawer-flow/contracts/game-start-drawer-api.yaml
-- [ ] T002 Sync plan assumptions and quickstart validation steps in specs/002-game-start-drawer-flow/plan.md and specs/002-game-start-drawer-flow/quickstart.md
+- [X] T001 Validate and finalize feature contract details in specs/002-game-start-drawer-flow/contracts/game-start-drawer-api.yaml
+- [X] T002 Sync plan assumptions and quickstart validation steps in specs/002-game-start-drawer-flow/plan.md and specs/002-game-start-drawer-flow/quickstart.md
 
 ---
 
@@ -23,12 +23,12 @@
 
 **CRITICAL**: No user story implementation starts before this phase is complete.
 
-- [ ] T003 Extend room domain model with round-start fields in backend/src/models/game.ts
-- [ ] T004 [P] Add deterministic selection helpers and seed usage constants in backend/src/seed/starterData.ts
-- [ ] T005 Refactor snapshot and projection primitives for viewer-aware fields in backend/src/services/roomStore.ts
-- [ ] T006 [P] Expand API schema and payload contracts for start/fetch responses in backend/src/api/schemas.ts
-- [ ] T007 Update frontend API types for drawer and secret-word snapshot fields in frontend/src/services/api.ts
-- [ ] T008 [P] Adjust frontend room state types/selectors for new snapshot shape in frontend/src/state/roomStore.ts
+- [X] T003 Extend room domain model with round-start fields in backend/src/models/game.ts
+- [X] T004 [P] Add deterministic selection helpers and seed usage constants in backend/src/seed/starterData.ts
+- [X] T005 Refactor snapshot and projection primitives for viewer-aware fields in backend/src/services/roomStore.ts
+- [X] T006 [P] Expand API schema and payload contracts for start/fetch responses in backend/src/api/schemas.ts
+- [X] T007 Update frontend API types for drawer and secret-word snapshot fields in frontend/src/services/api.ts
+- [X] T008 [P] Adjust frontend room state types/selectors for new snapshot shape in frontend/src/state/roomStore.ts
 
 **Checkpoint**: Foundation ready for independent user story delivery.
 
@@ -42,12 +42,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Enforce strict trimmed non-empty player name validation for create/join inputs in backend/src/api/schemas.ts
-- [ ] T010 [US1] Guarantee participant display name normalization at room mutation boundaries in backend/src/services/roomStore.ts
-- [ ] T011 [US1] Normalize and surface validation failures with stable error codes in backend/src/api/router.ts
-- [ ] T012 [P] [US1] Apply trimmed client-side submit validation and message mapping in frontend/src/pages/CreateRoomPage.tsx
-- [ ] T013 [P] [US1] Apply trimmed client-side submit validation and message mapping in frontend/src/pages/JoinRoomPage.tsx
-- [ ] T014 [US1] Ensure client API error propagation remains consistent for validation failures in frontend/src/services/api.ts
+- [X] T009 [US1] Enforce strict trimmed non-empty player name validation for create/join inputs in backend/src/api/schemas.ts
+- [X] T010 [US1] Guarantee participant display name normalization at room mutation boundaries in backend/src/services/roomStore.ts
+- [X] T011 [US1] Normalize and surface validation failures with stable error codes in backend/src/api/router.ts
+- [X] T012 [P] [US1] Apply trimmed client-side submit validation and message mapping in frontend/src/pages/CreateRoomPage.tsx
+- [X] T013 [P] [US1] Apply trimmed client-side submit validation and message mapping in frontend/src/pages/JoinRoomPage.tsx
+- [X] T014 [US1] Ensure client API error propagation remains consistent for validation failures in frontend/src/services/api.ts
 
 **Checkpoint**: Name validation behavior is complete and independently verifiable.
 
@@ -61,11 +61,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Implement deterministic drawer selection strategy in backend/src/services/roomStore.ts
-- [ ] T016 [US2] Implement deterministic secret-word selection strategy in backend/src/services/roomStore.ts
-- [ ] T017 [US2] Persist drawer and secret-word fields during successful start transition in backend/src/services/roomStore.ts
-- [ ] T018 [US2] Preserve start precondition invariants and no-mutation failures in backend/src/services/roomStore.ts
-- [ ] T019 [US2] Map start outcomes to contract-compliant status codes and errors in backend/src/api/rooms.ts
+- [X] T015 [US2] Implement deterministic drawer selection strategy in backend/src/services/roomStore.ts
+- [X] T016 [US2] Implement deterministic secret-word selection strategy in backend/src/services/roomStore.ts
+- [X] T017 [US2] Persist drawer and secret-word fields during successful start transition in backend/src/services/roomStore.ts
+- [X] T018 [US2] Preserve start precondition invariants and no-mutation failures in backend/src/services/roomStore.ts
+- [X] T019 [US2] Map start outcomes to contract-compliant status codes and errors in backend/src/api/rooms.ts
 
 **Checkpoint**: Deterministic start initialization works independently and is contract-compliant.
 
@@ -79,11 +79,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Add viewer-aware room snapshot projection that includes secret word for drawer only in backend/src/services/roomStore.ts
-- [ ] T021 [US3] Ensure GET room route passes viewer identity to snapshot projection in backend/src/api/rooms.ts
-- [ ] T022 [P] [US3] Extend frontend API contracts to consume drawer-visible secret word field in frontend/src/services/api.ts
-- [ ] T023 [US3] Render drawer role and secret word panel in game screen in frontend/src/pages/GamePage.tsx
-- [ ] T024 [US3] Update lobby-to-game flow handling for drawer metadata readiness in frontend/src/pages/LobbyPage.tsx
+- [X] T020 [US3] Add viewer-aware room snapshot projection that includes secret word for drawer only in backend/src/services/roomStore.ts
+- [X] T021 [US3] Ensure GET room route passes viewer identity to snapshot projection in backend/src/api/rooms.ts
+- [X] T022 [P] [US3] Extend frontend API contracts to consume drawer-visible secret word field in frontend/src/services/api.ts
+- [X] T023 [US3] Render drawer role and secret word panel in game screen in frontend/src/pages/GamePage.tsx
+- [X] T024 [US3] Update lobby-to-game flow handling for drawer metadata readiness in frontend/src/pages/LobbyPage.tsx
 
 **Checkpoint**: Drawer sees the correct secret word end-to-end.
 
@@ -97,10 +97,10 @@
 
 ### Implementation for User Story 4
 
-- [ ] T025 [US4] Enforce non-drawer secret-word omission in room snapshot serialization in backend/src/services/roomStore.ts
-- [ ] T026 [US4] Verify participant-scoped room fetch behavior for guessers across polling calls in backend/src/api/rooms.ts
-- [ ] T027 [P] [US4] Add defensive client guards to prevent accidental guesser word rendering in frontend/src/pages/GamePage.tsx
-- [ ] T028 [US4] Keep polling/state refresh path secret-safe for guesser sessions in frontend/src/state/roomStore.ts
+- [X] T025 [US4] Enforce non-drawer secret-word omission in room snapshot serialization in backend/src/services/roomStore.ts
+- [X] T026 [US4] Verify participant-scoped room fetch behavior for guessers across polling calls in backend/src/api/rooms.ts
+- [X] T027 [P] [US4] Add defensive client guards to prevent accidental guesser word rendering in frontend/src/pages/GamePage.tsx
+- [X] T028 [US4] Keep polling/state refresh path secret-safe for guesser sessions in frontend/src/state/roomStore.ts
 
 **Checkpoint**: Guesser secrecy is preserved under repeated fetch and polling behavior.
 
@@ -110,9 +110,9 @@
 
 **Purpose**: Final consistency, docs sync, and acceptance verification across stories.
 
-- [ ] T029 [P] Update acceptance walkthrough and curl examples for drawer/guesser checks in specs/002-game-start-drawer-flow/quickstart.md
-- [ ] T030 Validate contract/spec/plan/tasks consistency for feature 002 in specs/002-game-start-drawer-flow/spec.md and specs/002-game-start-drawer-flow/plan.md and specs/002-game-start-drawer-flow/tasks.md
-- [ ] T031 Run backend and frontend build verification commands and capture results in specs/002-game-start-drawer-flow/plan.md
+- [X] T029 [P] Update acceptance walkthrough and curl examples for drawer/guesser checks in specs/002-game-start-drawer-flow/quickstart.md
+- [X] T030 Validate contract/spec/plan/tasks consistency for feature 002 in specs/002-game-start-drawer-flow/spec.md and specs/002-game-start-drawer-flow/plan.md and specs/002-game-start-drawer-flow/tasks.md
+- [X] T031 Run backend and frontend build verification commands and capture results in specs/002-game-start-drawer-flow/plan.md
 
 ---
 

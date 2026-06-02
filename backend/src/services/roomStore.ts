@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { Participant, Room, RoomSnapshot } from "../models/game.js";
-import { STARTER_ROLES, STARTER_WORDS } from "../seed/starterData.js";
+import { STARTER_WORDS, buildWordSeed, selectDeterministicWord } from "../seed/starterData.js";
 
 const rooms = new Map<string, Room>();
 
@@ -61,12 +61,18 @@ export function listWords() {
   return [...STARTER_WORDS];
 }
 
+function pickDrawerParticipantId(room: Room) {
+  return room.participants[0]?.id ?? null;
+}
+
 export function createRoom(playerName: string) {
   const participant = createParticipant(playerName, true);
   const room: Room = {
     code: generateUniqueCode(),
     status: "lobby",
     participants: [participant],
+    drawerParticipantId: null,
+    secretWord: null,
     createdAt: now(),
     updatedAt: now()
   };
@@ -136,7 +142,16 @@ export function startGame(code: string, participantId: string): { room: Room | n
     return { room: null, error: "NOT_ENOUGH_PLAYERS" };
   }
 
+  const drawerParticipantId = pickDrawerParticipantId(room);
+
+  if (!drawerParticipantId) {
+    return { room: null, error: "INVALID_STATE" };
+  }
+
+  const seed = buildWordSeed(room.code, room.createdAt);
   room.status = "playing";
+  room.drawerParticipantId = drawerParticipantId;
+  room.secretWord = selectDeterministicWord(seed);
   room.updatedAt = now();
   rooms.set(normalizedCode, room);
 
@@ -144,13 +159,24 @@ export function startGame(code: string, participantId: string): { room: Room | n
 }
 
 export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {
-  void viewerParticipantId;
+  const viewerRole =
+    viewerParticipantId && room.drawerParticipantId && viewerParticipantId === room.drawerParticipantId
+      ? "drawer"
+      : viewerParticipantId
+        ? "guesser"
+        : null;
 
-  return {
+  const snapshot: RoomSnapshot = {
     code: room.code,
     status: room.status,
     participants: room.participants.map((participant) => ({ ...participant })),
-    availableWords: listWords(),
-    roles: [...STARTER_ROLES]
+    drawerParticipantId: room.drawerParticipantId,
+    viewerRole
   };
+
+  if (room.status === "playing" && viewerRole === "drawer" && room.secretWord) {
+    snapshot.secretWord = room.secretWord;
+  }
+
+  return snapshot;
 }

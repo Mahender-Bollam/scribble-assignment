@@ -71,8 +71,16 @@ class RoomStore {
   }
 
   setRoomSnapshot(room: RoomSnapshot) {
+    const sanitizedRoom =
+      room.viewerRole === "drawer"
+        ? room
+        : {
+            ...room,
+            secretWord: undefined
+          };
+
     this.setState({
-      room,
+      room: sanitizedRoom,
       error: null
     });
   }
@@ -119,11 +127,16 @@ class RoomStore {
   }
 
   async startGame() {
-    if (!this.state.room || !this.state.participantId) {
+    const activeRoom = this.state.room;
+    const participantId = this.state.participantId;
+
+    if (!activeRoom || !participantId) {
       throw new Error("Room session is missing");
     }
 
-    const response = await this.withLoading(() => api.startGame(this.state.room!.code, this.state.participantId!));
+    const roomCode = activeRoom.code;
+
+    const response = await this.withLoading(() => api.startGame(roomCode, participantId));
     this.setRoomSnapshot(response.room);
     return response.room;
   }

@@ -155,7 +155,7 @@ components:
         viewerRole:
           type: string
           nullable: true
-          enum: [drawer, guesser, null]
+          enum: [drawer, guesser]
         secretWord:
           type: string
           description: Present only for drawer snapshots while playing
