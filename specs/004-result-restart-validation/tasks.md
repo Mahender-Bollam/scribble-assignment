@@ -12,8 +12,8 @@
 
 **Purpose**: Align feature artifacts and baseline contracts before coding.
 
-- [ ] T001 Validate and finalize result and restart contract definitions in specs/004-result-restart-validation/contracts/result-restart-api.yaml
-- [ ] T002 Sync feature assumptions and final validation flow across specs/004-result-restart-validation/spec.md and specs/004-result-restart-validation/plan.md and specs/004-result-restart-validation/quickstart.md
+- [X] T001 Validate and finalize result and restart contract definitions in specs/004-result-restart-validation/contracts/result-restart-api.yaml
+- [X] T002 Sync feature assumptions and final validation flow across specs/004-result-restart-validation/spec.md and specs/004-result-restart-validation/plan.md and specs/004-result-restart-validation/quickstart.md
 
 ---
 
@@ -23,13 +23,13 @@
 
 **CRITICAL**: Complete this phase before any user story implementation.
 
-- [ ] T003 Extend room and snapshot domain types for results lifecycle fields in backend/src/models/game.ts
-- [ ] T004 [P] Define restart and result lifecycle constants in backend/src/seed/starterData.ts
-- [ ] T005 Add request schema for restart action in backend/src/api/schemas.ts
-- [ ] T006 Refactor room store to initialize and project result/restart state in backend/src/services/roomStore.ts
-- [ ] T007 [P] Extend frontend room snapshot contracts for result and restart metadata in frontend/src/services/api.ts
-- [ ] T008 [P] Add frontend state support for results lifecycle projection in frontend/src/state/roomStore.ts
-- [ ] T009 Add shared frontend result/restart view-model helpers in frontend/src/state/roomStore.ts
+- [X] T003 Extend room and snapshot domain types for results lifecycle fields in backend/src/models/game.ts
+- [X] T004 [P] Define restart and result lifecycle constants in backend/src/seed/starterData.ts
+- [X] T005 Add request schema for restart action in backend/src/api/schemas.ts
+- [X] T006 Refactor room store to initialize and project result/restart state in backend/src/services/roomStore.ts
+- [X] T007 [P] Extend frontend room snapshot contracts for result and restart metadata in frontend/src/services/api.ts
+- [X] T008 [P] Add frontend state support for results lifecycle projection in frontend/src/state/roomStore.ts
+- [X] T009 Add shared frontend result/restart view-model helpers in frontend/src/state/roomStore.ts
 
 **Checkpoint**: Foundation is ready for independent story delivery.
 
@@ -43,13 +43,13 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Implement deterministic final ranking and tie projection logic in backend/src/services/roomStore.ts
-- [ ] T011 [US1] Include finalized result payload in room snapshot projection in backend/src/services/roomStore.ts
-- [ ] T012 [US1] Ensure GET /rooms/:code lifecycle projection supports results state in backend/src/api/rooms.ts
-- [ ] T013 [P] [US1] Add frontend result types and accessors in frontend/src/services/api.ts
-- [ ] T014 [P] [US1] Create final results panel component in frontend/src/components/FinalResultPanel.tsx
-- [ ] T015 [US1] Integrate final results panel into gameplay route in frontend/src/pages/GamePage.tsx
-- [ ] T016 [US1] Render deterministic winner and tie display in frontend/src/components/Scoreboard.tsx and frontend/src/components/FinalResultPanel.tsx
+- [X] T010 [US1] Implement deterministic final ranking and tie projection logic in backend/src/services/roomStore.ts
+- [X] T011 [US1] Include finalized result payload in room snapshot projection in backend/src/services/roomStore.ts
+- [X] T012 [US1] Ensure GET /rooms/:code lifecycle projection supports results state in backend/src/api/rooms.ts
+- [X] T013 [P] [US1] Add frontend result types and accessors in frontend/src/services/api.ts
+- [X] T014 [P] [US1] Create final results panel component in frontend/src/components/FinalResultPanel.tsx
+- [X] T015 [US1] Integrate final results panel into gameplay route in frontend/src/pages/GamePage.tsx
+- [X] T016 [US1] Render deterministic winner and tie display in frontend/src/components/Scoreboard.tsx and frontend/src/components/FinalResultPanel.tsx
 
 **Checkpoint**: Final results are visible and consistent for all participants.
 
@@ -63,13 +63,13 @@
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Implement host-only restart authorization and lifecycle guards in backend/src/services/roomStore.ts
-- [ ] T018 [US2] Add POST /rooms/:code/restart route with authorization and state error mapping in backend/src/api/rooms.ts
-- [ ] T019 [US2] Add restart schema constraints and messages in backend/src/api/schemas.ts
-- [ ] T020 [P] [US2] Add restart API client method in frontend/src/services/api.ts
-- [ ] T021 [US2] Add restart action and error propagation in frontend/src/state/roomStore.ts
-- [ ] T022 [US2] Add restart control UI with host-only visibility/disabled behavior in frontend/src/pages/GamePage.tsx
-- [ ] T023 [US2] Show user-facing restart failure feedback for unauthorized and invalid states in frontend/src/pages/GamePage.tsx
+- [X] T017 [US2] Implement host-only restart authorization and lifecycle guards in backend/src/services/roomStore.ts
+- [X] T018 [US2] Add POST /rooms/:code/restart route with authorization and state error mapping in backend/src/api/rooms.ts
+- [X] T019 [US2] Add restart schema constraints and messages in backend/src/api/schemas.ts
+- [X] T020 [P] [US2] Add restart API client method in frontend/src/services/api.ts
+- [X] T021 [US2] Add restart action and error propagation in frontend/src/state/roomStore.ts
+- [X] T022 [US2] Add restart control UI with host-only visibility/disabled behavior in frontend/src/pages/GamePage.tsx
+- [X] T023 [US2] Show user-facing restart failure feedback for unauthorized and invalid states in frontend/src/pages/GamePage.tsx
 
 **Checkpoint**: Restart control is host-authoritative with explicit failure paths.
 
@@ -83,12 +83,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T024 [US3] Implement restart reset mutation for gameplay progress and scores in backend/src/services/roomStore.ts
-- [ ] T025 [US3] Ensure participant retention and disconnected-user exclusion during restart in backend/src/services/roomStore.ts
-- [ ] T026 [US3] Reset canvas, guess history, drawer, and per-round markers on restart in backend/src/services/roomStore.ts
-- [ ] T027 [P] [US3] Extend frontend state hydration to consume post-restart clean snapshot in frontend/src/state/roomStore.ts
-- [ ] T028 [US3] Clear stale result UI and restore pre-game controls after restart in frontend/src/pages/GamePage.tsx
-- [ ] T029 [US3] Ensure polling refresh converges all clients to same clean restart state in frontend/src/pages/GamePage.tsx and frontend/src/state/roomStore.ts
+- [X] T024 [US3] Implement restart reset mutation for gameplay progress and scores in backend/src/services/roomStore.ts
+- [X] T025 [US3] Ensure participant retention and disconnected-user exclusion during restart in backend/src/services/roomStore.ts
+- [X] T026 [US3] Reset canvas, guess history, drawer, and per-round markers on restart in backend/src/services/roomStore.ts
+- [X] T027 [P] [US3] Extend frontend state hydration to consume post-restart clean snapshot in frontend/src/state/roomStore.ts
+- [X] T028 [US3] Clear stale result UI and restore pre-game controls after restart in frontend/src/pages/GamePage.tsx
+- [X] T029 [US3] Ensure polling refresh converges all clients to same clean restart state in frontend/src/pages/GamePage.tsx and frontend/src/state/roomStore.ts
 
 **Checkpoint**: Restart produces a clean, fair next-game baseline.
 
@@ -102,12 +102,12 @@
 
 ### Implementation for User Story 4
 
-- [ ] T030 [US4] Enforce result immutability between finalization and accepted restart in backend/src/services/roomStore.ts
-- [ ] T031 [US4] Add restart eligibility flags and finalization metadata projection in backend/src/services/roomStore.ts
-- [ ] T032 [US4] Ensure invalid-state restart attempts return consistent conflict semantics in backend/src/api/rooms.ts
-- [ ] T033 [P] [US4] Add frontend selectors for restart eligibility and immutable result display in frontend/src/state/roomStore.ts
-- [ ] T034 [US4] Preserve stable result rendering through polling and page refresh in frontend/src/pages/GamePage.tsx and frontend/src/components/FinalResultPanel.tsx
-- [ ] T035 [US4] Render validation-oriented status messaging for finalization and restart readiness in frontend/src/components/ResultPanel.tsx and frontend/src/pages/GamePage.tsx
+- [X] T030 [US4] Enforce result immutability between finalization and accepted restart in backend/src/services/roomStore.ts
+- [X] T031 [US4] Add restart eligibility flags and finalization metadata projection in backend/src/services/roomStore.ts
+- [X] T032 [US4] Ensure invalid-state restart attempts return consistent conflict semantics in backend/src/api/rooms.ts
+- [X] T033 [P] [US4] Add frontend selectors for restart eligibility and immutable result display in frontend/src/state/roomStore.ts
+- [X] T034 [US4] Preserve stable result rendering through polling and page refresh in frontend/src/pages/GamePage.tsx and frontend/src/components/FinalResultPanel.tsx
+- [X] T035 [US4] Render validation-oriented status messaging for finalization and restart readiness in frontend/src/components/ResultPanel.tsx and frontend/src/pages/GamePage.tsx
 
 **Checkpoint**: Final validation behavior is deterministic and stable across client updates.
 
@@ -117,9 +117,9 @@
 
 **Purpose**: Final consistency checks, documentation updates, and end-to-end validation.
 
-- [ ] T036 [P] Update result and restart walkthrough and validation steps in specs/004-result-restart-validation/quickstart.md
-- [ ] T037 Validate cross-artifact consistency in specs/004-result-restart-validation/spec.md and specs/004-result-restart-validation/plan.md and specs/004-result-restart-validation/tasks.md and specs/004-result-restart-validation/contracts/result-restart-api.yaml
-- [ ] T038 Run backend and frontend build and test commands and record results in specs/004-result-restart-validation/plan.md
+- [X] T036 [P] Update result and restart walkthrough and validation steps in specs/004-result-restart-validation/quickstart.md
+- [X] T037 Validate cross-artifact consistency in specs/004-result-restart-validation/spec.md and specs/004-result-restart-validation/plan.md and specs/004-result-restart-validation/tasks.md and specs/004-result-restart-validation/contracts/result-restart-api.yaml
+- [X] T038 Run backend and frontend build and test commands and record results in specs/004-result-restart-validation/plan.md
 
 ---
 

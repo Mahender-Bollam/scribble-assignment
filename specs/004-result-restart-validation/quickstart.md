@@ -28,6 +28,7 @@ Implement and validate Feature Group 4:
 7. Attempt restart before final results are available and verify invalid-state rejection.
 8. Refresh Browser B during results and confirm finalized result remains unchanged until valid restart.
 9. After restart, start a new game and confirm previous-game points do not carry over.
+10. After restart and new game start, verify drawer assignment advances deterministically to the next participant.
 
 ## Build and Test Checks
 

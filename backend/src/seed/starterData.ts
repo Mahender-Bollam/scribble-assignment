@@ -16,6 +16,8 @@ export const DRAWER_ROUND_POINTS = 5;
 export const MAX_GUESS_LENGTH = 64;
 export const DEFAULT_STROKE_COLOR = "#111827";
 export const DEFAULT_STROKE_SIZE = 4;
+export const RESTART_ELIGIBLE_STATUS = "results" as const;
+export const DEFAULT_CAN_RESTART = false;
 
 export function buildWordSeed(roomCode: string, createdAt: string) {
   return `${roomCode}:${createdAt}`;

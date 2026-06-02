@@ -7,12 +7,16 @@ import {
   useSyncExternalStore,
   type PropsWithChildren
 } from "react";
-import { api, type RoomSessionResponse, type RoomSnapshot } from "../services/api";
+import { api, type FinalResult, type RoomSessionResponse, type RoomSnapshot } from "../services/api";
 
 export interface GameplayViewModel {
   isDrawer: boolean;
+  isResultsStage: boolean;
+  isHost: boolean;
   drawerName: string;
   scoreByParticipantId: Record<string, number>;
+  finalResult: FinalResult | null;
+  canRestart: boolean;
 }
 
 export interface RoomState {
@@ -194,6 +198,19 @@ class RoomStore {
     this.setRoomSnapshot(response.room);
     return response.room;
   }
+
+  async restartGame() {
+    const activeRoom = this.state.room;
+    const participantId = this.state.participantId;
+
+    if (!activeRoom || !participantId) {
+      throw new Error("Room session is missing");
+    }
+
+    const response = await this.withLoading(() => api.restartGame(activeRoom.code, participantId));
+    this.setRoomSnapshot(response.room);
+    return response.room;
+  }
 }
 
 const RoomStoreContext = createContext<RoomStore | null>(null);
@@ -231,16 +248,26 @@ export function useGameplayViewModel() {
   if (!room || !participantId) {
     return {
       isDrawer: false,
+      isResultsStage: false,
+      isHost: false,
       drawerName: "Unassigned",
-      scoreByParticipantId: {}
+      scoreByParticipantId: {},
+      finalResult: null,
+      canRestart: false
     } satisfies GameplayViewModel;
   }
+
+  const viewer = room.participants.find((participant) => participant.id === participantId) ?? null;
 
   const drawerName = room.participants.find((participant) => participant.id === room.drawerParticipantId)?.name ?? "Unassigned";
 
   return {
     isDrawer: room.viewerRole === "drawer",
+    isResultsStage: room.status === "results",
+    isHost: Boolean(viewer?.isHost),
     drawerName,
-    scoreByParticipantId: room.scores
+    scoreByParticipantId: room.scores,
+    finalResult: room.result,
+    canRestart: room.canRestart
   } satisfies GameplayViewModel;
 }

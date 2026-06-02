@@ -37,6 +37,10 @@ export const submitGuessSchema = z.object({
   text: z.string().trim().min(1, "Guess is required").max(64, "Guess is too long")
 });
 
+export const restartGameSchema = z.object({
+  participantId: z.string().trim().min(1, "participantId is required").max(128)
+});
+
 export class HttpError extends Error {
   statusCode: number;
   code?: string;

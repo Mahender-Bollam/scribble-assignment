@@ -62,6 +62,7 @@ A room finishes a game, every player sees the same final results, and the host r
 - A restart request is submitted multiple times in rapid succession.
 - A participant reconnects during results and must see the same finalized outcome.
 - A participant leaves immediately before restart and should not be included in the next game state.
+- Drawer assignment after restart must be deterministic and fair for the next game start.
 
 ### Assumptions
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createRoom, joinRoom } from "./roomStore.js";
+import { createRoom, joinRoom, restartGame, startGame, submitGuess } from "./roomStore.js";
 
 describe("roomStore", () => {
   it("createRoom returns a room with a 4-character uppercase code", () => {
@@ -15,5 +15,32 @@ describe("roomStore", () => {
     const result = joinRoom("ZZZZ", "Bob");
 
     expect(result).toBeNull();
+  });
+
+  it("rotates drawer to next participant after a restart", () => {
+    const host = createRoom("Alice");
+    const guest = joinRoom(host.room.code, "Bob");
+
+    expect(guest).not.toBeNull();
+    if (!guest) {
+      return;
+    }
+
+    const startedFirst = startGame(host.room.code, host.participantId);
+    expect(startedFirst.error).toBeNull();
+    expect(startedFirst.room?.drawerParticipantId).toBe(host.participantId);
+
+    const secretWord = startedFirst.room?.secretWord ?? "";
+    const guessed = submitGuess(host.room.code, guest.participantId, secretWord);
+    expect(guessed.error).toBeNull();
+    expect(guessed.room?.status).toBe("results");
+
+    const restarted = restartGame(host.room.code, host.participantId);
+    expect(restarted.error).toBeNull();
+    expect(restarted.room?.status).toBe("lobby");
+
+    const startedSecond = startGame(host.room.code, host.participantId);
+    expect(startedSecond.error).toBeNull();
+    expect(startedSecond.room?.drawerParticipantId).toBe(guest.participantId);
   });
 });

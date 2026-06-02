@@ -7,6 +7,7 @@ import {
   joinRoomSchema,
   roomCodeParamsSchema,
   roomViewerQuerySchema,
+  restartGameSchema,
   submitGuessSchema,
   startGameSchema
 } from "./schemas.js";
@@ -17,6 +18,7 @@ import {
   getRoom,
   joinRoom,
   normalizeRoomCode,
+  restartGame,
   startGame,
   submitGuess,
   toRoomSnapshot
@@ -196,6 +198,36 @@ export function createRoomsRouter() {
 
       if (!result.room) {
         throw new HttpError(500, "Unable to submit guess", "INVALID_STATE");
+      }
+
+      response.json({
+        room: toRoomSnapshot(result.room, participantId)
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/:code/restart", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const { participantId } = restartGameSchema.parse(request.body);
+      const result = restartGame(normalizeRoomCode(code), participantId);
+
+      if (result.error) {
+        if (result.error === "ROOM_NOT_FOUND" || result.error === "PLAYER_NOT_IN_ROOM") {
+          throw new HttpError(404, "Room or participant not found", result.error);
+        }
+
+        if (result.error === "HOST_ONLY") {
+          throw new HttpError(403, "Only the host can restart the game", result.error);
+        }
+
+        throw new HttpError(409, "Room is not in a restartable state", "INVALID_STATE");
+      }
+
+      if (!result.room) {
+        throw new HttpError(500, "Unable to restart game", "INVALID_STATE");
       }
 
       response.json({
