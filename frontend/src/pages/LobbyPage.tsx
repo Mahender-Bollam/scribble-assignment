@@ -8,7 +8,7 @@ import { useRoomState, useRoomStore } from "../state/roomStore";
 export function LobbyPage() {
   const navigate = useNavigate();
   const roomStore = useRoomStore();
-  const { room, error, isLoading } = useRoomState();
+  const { room, participantId, error, isLoading } = useRoomState();
   const [refreshError, setRefreshError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,15 +20,61 @@ export function LobbyPage() {
   async function handleRefresh() {
     try {
       setRefreshError(null);
-      await roomStore.fetchRoom();
+      await roomStore.fetchRoom({ silent: false });
     } catch (caughtError) {
       setRefreshError(caughtError instanceof Error ? caughtError.message : "Unable to refresh room");
+    }
+  }
+
+  useEffect(() => {
+    if (!room) {
+      return;
+    }
+
+    let isActive = true;
+
+    const poll = async () => {
+      try {
+        await roomStore.fetchRoom({ silent: true });
+      } catch (caughtError) {
+        if (isActive) {
+          const message = caughtError instanceof Error ? caughtError.message : "Unable to refresh room";
+          setRefreshError(message);
+        }
+      }
+    };
+
+    void poll();
+    const intervalId = window.setInterval(() => {
+      void poll();
+    }, 2000);
+
+    return () => {
+      isActive = false;
+      window.clearInterval(intervalId);
+    };
+  }, [room?.code, roomStore]);
+
+  async function handleStartGame() {
+    try {
+      setRefreshError(null);
+      const nextRoom = await roomStore.startGame();
+
+      if (nextRoom.status === "playing") {
+        navigate("/game");
+      }
+    } catch (caughtError) {
+      setRefreshError(caughtError instanceof Error ? caughtError.message : "Unable to start game");
     }
   }
 
   if (!room) {
     return null;
   }
+
+  const viewer = room.participants.find((participant) => participant.id === participantId);
+  const isHost = Boolean(viewer?.isHost);
+  const canStart = isHost && room.participants.length >= 2;
 
   return (
     <section className="panel placeholder-page">
@@ -49,7 +95,10 @@ export function LobbyPage() {
             <ul className="player-list">
               {room.participants.map((participant) => (
                 <li key={participant.id}>
-                  <span>{participant.name}</span>
+                  <span>
+                    {participant.name}
+                    {participant.isHost ? " (Host)" : ""}
+                  </span>
                   <span className="player-list__meta">joined</span>
                 </li>
               ))}
@@ -69,8 +118,8 @@ export function LobbyPage() {
         <button className="button button--secondary" disabled={isLoading} onClick={handleRefresh}>
           {isLoading ? "Refreshing..." : "Refresh Room"}
         </button>
-        <button className="button button--primary" onClick={() => navigate("/game")}>
-          Start Game
+        <button className="button button--primary" onClick={handleStartGame} disabled={!canStart || isLoading}>
+          {isHost ? "Start Game" : "Host Only"}
         </button>
       </div>
     </section>

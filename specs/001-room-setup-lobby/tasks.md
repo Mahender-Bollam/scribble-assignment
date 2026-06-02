@@ -12,9 +12,9 @@
 
 **Purpose**: Prepare shared contracts and feature wiring before behavior changes.
 
-- [ ] T001 Confirm feature pointer in .specify/feature.json targets specs/001-room-setup-lobby
-- [ ] T002 Align frontend API base URL fallback and room snapshot typings in frontend/src/services/api.ts
-- [ ] T003 [P] Add clear feature-specific error-code mapping notes in specs/001-room-setup-lobby/contracts/lobby-room-api.yaml
+- [X] T001 Confirm feature pointer in .specify/feature.json targets specs/001-room-setup-lobby
+- [X] T002 Align frontend API base URL fallback and room snapshot typings in frontend/src/services/api.ts
+- [X] T003 [P] Add clear feature-specific error-code mapping notes in specs/001-room-setup-lobby/contracts/lobby-room-api.yaml
 
 ---
 
@@ -24,12 +24,12 @@
 
 **CRITICAL**: No user story work should start until this phase is complete.
 
-- [ ] T004 Extend room and participant domain fields (host/status) in backend/src/models/game.ts
-- [ ] T005 Implement canonical room code normalization helper in backend/src/services/roomStore.ts
-- [ ] T006 Enforce input schemas for trimmed non-empty player names and start request payload in backend/src/api/schemas.ts
-- [ ] T007 [P] Standardize API error payload shape and status-code mapping in backend/src/api/router.ts
-- [ ] T008 Add room snapshot fields required by contract in backend/src/services/roomStore.ts
-- [ ] T009 Update frontend room state interfaces for host/status additions in frontend/src/state/roomStore.ts
+- [X] T004 Extend room and participant domain fields (host/status) in backend/src/models/game.ts
+- [X] T005 Implement canonical room code normalization helper in backend/src/services/roomStore.ts
+- [X] T006 Enforce input schemas for trimmed non-empty player names and start request payload in backend/src/api/schemas.ts
+- [X] T007 [P] Standardize API error payload shape and status-code mapping in backend/src/api/router.ts
+- [X] T008 Add room snapshot fields required by contract in backend/src/services/roomStore.ts
+- [X] T009 Update frontend room state interfaces for host/status additions in frontend/src/state/roomStore.ts
 
 **Checkpoint**: Foundational data contracts and validation are ready.
 
@@ -41,13 +41,13 @@
 
 **Independent Test**: Create room and join room flows validate host assignment and input/room-code errors.
 
-- [ ] T010 [US1] Assign host on room creation and persist host flag in backend/src/services/roomStore.ts
-- [ ] T011 [US1] Reject invalid room-code joins with explicit message and code in backend/src/api/rooms.ts
-- [ ] T012 [US1] Return host flag in room snapshots from backend/src/services/roomStore.ts
-- [ ] T013 [US1] Render host indicator in lobby participant list in frontend/src/pages/LobbyPage.tsx
-- [ ] T014 [US1] Surface create/join validation errors with clear copy in frontend/src/pages/CreateRoomPage.tsx
-- [ ] T015 [US1] Surface create/join validation errors with clear copy in frontend/src/pages/JoinRoomPage.tsx
-- [ ] T016 [US1] Normalize room code input before join request dispatch in frontend/src/pages/JoinRoomPage.tsx
+- [X] T010 [US1] Assign host on room creation and persist host flag in backend/src/services/roomStore.ts
+- [X] T011 [US1] Reject invalid room-code joins with explicit message and code in backend/src/api/rooms.ts
+- [X] T012 [US1] Return host flag in room snapshots from backend/src/services/roomStore.ts
+- [X] T013 [US1] Render host indicator in lobby participant list in frontend/src/pages/LobbyPage.tsx
+- [X] T014 [US1] Surface create/join validation errors with clear copy in frontend/src/pages/CreateRoomPage.tsx
+- [X] T015 [US1] Surface create/join validation errors with clear copy in frontend/src/pages/JoinRoomPage.tsx
+- [X] T016 [US1] Normalize room code input before join request dispatch in frontend/src/pages/JoinRoomPage.tsx
 
 **Checkpoint**: Host tracking and join validation are functional and independently verifiable.
 
@@ -59,11 +59,11 @@
 
 **Independent Test**: Two lobbies in different rooms never leak participants; same-room joins appear automatically.
 
-- [ ] T017 [US2] Guard room reads/writes by normalized room code in backend/src/services/roomStore.ts
-- [ ] T018 [P] [US2] Ensure join/fetch routes consistently normalize room code in backend/src/api/rooms.ts
-- [ ] T019 [US2] Add lobby polling loop (~2s cadence) with cleanup on unmount in frontend/src/pages/LobbyPage.tsx
-- [ ] T020 [US2] Add fetch-room loading/error recovery behavior for polling failures in frontend/src/state/roomStore.ts
-- [ ] T021 [US2] Prevent stale updates after navigation by adding polling lifecycle guards in frontend/src/pages/LobbyPage.tsx
+- [X] T017 [US2] Guard room reads/writes by normalized room code in backend/src/services/roomStore.ts
+- [X] T018 [P] [US2] Ensure join/fetch routes consistently normalize room code in backend/src/api/rooms.ts
+- [X] T019 [US2] Add lobby polling loop (~2s cadence) with cleanup on unmount in frontend/src/pages/LobbyPage.tsx
+- [X] T020 [US2] Add fetch-room loading/error recovery behavior for polling failures in frontend/src/state/roomStore.ts
+- [X] T021 [US2] Prevent stale updates after navigation by adding polling lifecycle guards in frontend/src/pages/LobbyPage.tsx
 
 **Checkpoint**: Automatic lobby synchronization works and room isolation remains intact.
 
@@ -75,13 +75,13 @@
 
 **Independent Test**: Non-host start is rejected; host start requires at least 2 participants; successful start updates room status.
 
-- [ ] T022 [US3] Implement start-game service operation with host and player-count checks in backend/src/services/roomStore.ts
-- [ ] T023 [US3] Add POST start-game route and error mappings in backend/src/api/rooms.ts
-- [ ] T024 [US3] Add startGame API client method in frontend/src/services/api.ts
-- [ ] T025 [US3] Add roomStore startGame action and state updates in frontend/src/state/roomStore.ts
-- [ ] T026 [US3] Restrict start button UI to host and disable when player count < 2 in frontend/src/pages/LobbyPage.tsx
-- [ ] T027 [US3] Show host-only and minimum-player start error messages in frontend/src/pages/LobbyPage.tsx
-- [ ] T028 [US3] Navigate to game route after successful start transition in frontend/src/pages/LobbyPage.tsx
+- [X] T022 [US3] Implement start-game service operation with host and player-count checks in backend/src/services/roomStore.ts
+- [X] T023 [US3] Add POST start-game route and error mappings in backend/src/api/rooms.ts
+- [X] T024 [US3] Add startGame API client method in frontend/src/services/api.ts
+- [X] T025 [US3] Add roomStore startGame action and state updates in frontend/src/state/roomStore.ts
+- [X] T026 [US3] Restrict start button UI to host and disable when player count < 2 in frontend/src/pages/LobbyPage.tsx
+- [X] T027 [US3] Show host-only and minimum-player start error messages in frontend/src/pages/LobbyPage.tsx
+- [X] T028 [US3] Navigate to game route after successful start transition in frontend/src/pages/LobbyPage.tsx
 
 **Checkpoint**: Host-only start behavior is complete and synchronized through room status updates.
 
@@ -91,10 +91,10 @@
 
 **Purpose**: Final alignment, docs sync, and acceptance walkthrough.
 
-- [ ] T029 [P] Update quickstart validation wording to match implemented behavior in specs/001-room-setup-lobby/quickstart.md
-- [ ] T030 [P] Sync contract examples with final error codes/messages in specs/001-room-setup-lobby/contracts/lobby-room-api.yaml
-- [ ] T031 Run manual multi-tab acceptance walkthrough and record outcomes in specs/001-room-setup-lobby/research.md
-- [ ] T032 Run build validation commands and record completion in specs/001-room-setup-lobby/plan.md
+- [X] T029 [P] Update quickstart validation wording to match implemented behavior in specs/001-room-setup-lobby/quickstart.md
+- [X] T030 [P] Sync contract examples with final error codes/messages in specs/001-room-setup-lobby/contracts/lobby-room-api.yaml
+- [X] T031 Run manual multi-tab acceptance walkthrough and record outcomes in specs/001-room-setup-lobby/research.md
+- [X] T032 Run build validation commands and record completion in specs/001-room-setup-lobby/plan.md
 
 ---
 

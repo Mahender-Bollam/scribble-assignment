@@ -4,6 +4,13 @@ import { STARTER_ROLES, STARTER_WORDS } from "../seed/starterData.js";
 
 const rooms = new Map<string, Room>();
 
+export type StartGameError =
+  | "ROOM_NOT_FOUND"
+  | "PLAYER_NOT_IN_ROOM"
+  | "HOST_ONLY"
+  | "NOT_ENOUGH_PLAYERS"
+  | "INVALID_STATE";
+
 function now() {
   return new Date().toISOString();
 }
@@ -29,14 +36,19 @@ function generateUniqueCode() {
   return code;
 }
 
-function displayName(name?: string) {
-  return name || "Player";
+export function normalizeRoomCode(code: string) {
+  return code.trim().toUpperCase();
 }
 
-function createParticipant(name?: string): Participant {
+function displayName(name: string) {
+  return name.trim();
+}
+
+function createParticipant(name: string, isHost: boolean): Participant {
   return {
     id: randomUUID(),
     name: displayName(name),
+    isHost,
     joinedAt: now()
   };
 }
@@ -49,8 +61,8 @@ export function listWords() {
   return [...STARTER_WORDS];
 }
 
-export function createRoom(playerName?: string) {
-  const participant = createParticipant(playerName);
+export function createRoom(playerName: string) {
+  const participant = createParticipant(playerName, true);
   const room: Room = {
     code: generateUniqueCode(),
     status: "lobby",
@@ -67,17 +79,18 @@ export function createRoom(playerName?: string) {
   };
 }
 
-export function joinRoom(code: string, playerName?: string) {
-  const room = rooms.get(code);
+export function joinRoom(code: string, playerName: string) {
+  const normalizedCode = normalizeRoomCode(code);
+  const room = rooms.get(normalizedCode);
 
-  if (!room) {
+  if (!room || room.status !== "lobby") {
     return null;
   }
 
-  const participant = createParticipant(playerName);
+  const participant = createParticipant(playerName, false);
   room.participants.push(participant);
   room.updatedAt = now();
-  rooms.set(room.code, room);
+  rooms.set(normalizedCode, room);
 
   return {
     room: cloneRoom(room),
@@ -86,14 +99,48 @@ export function joinRoom(code: string, playerName?: string) {
 }
 
 export function getRoom(code: string) {
-  const room = rooms.get(code);
+  const normalizedCode = normalizeRoomCode(code);
+  const room = rooms.get(normalizedCode);
   return room ? cloneRoom(room) : null;
 }
 
 export function saveRoom(room: Room) {
   room.updatedAt = now();
-  rooms.set(room.code, cloneRoom(room));
+  rooms.set(normalizeRoomCode(room.code), cloneRoom(room));
   return getRoom(room.code);
+}
+
+export function startGame(code: string, participantId: string): { room: Room | null; error: StartGameError | null } {
+  const normalizedCode = normalizeRoomCode(code);
+  const room = rooms.get(normalizedCode);
+
+  if (!room) {
+    return { room: null, error: "ROOM_NOT_FOUND" };
+  }
+
+  const requester = room.participants.find((participant) => participant.id === participantId);
+
+  if (!requester) {
+    return { room: null, error: "PLAYER_NOT_IN_ROOM" };
+  }
+
+  if (!requester.isHost) {
+    return { room: null, error: "HOST_ONLY" };
+  }
+
+  if (room.status !== "lobby") {
+    return { room: null, error: "INVALID_STATE" };
+  }
+
+  if (room.participants.length < 2) {
+    return { room: null, error: "NOT_ENOUGH_PLAYERS" };
+  }
+
+  room.status = "playing";
+  room.updatedAt = now();
+  rooms.set(normalizedCode, room);
+
+  return { room: cloneRoom(room), error: null };
 }
 
 export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {

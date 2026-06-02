@@ -2,6 +2,15 @@ openapi: 3.0.3
 info:
   title: Scribble Room Setup and Lobby API
   version: 0.1.0
+  description: |
+    Error code mapping used by this feature:
+    - VALIDATION_ERROR: request schema failed
+    - ROOM_NOT_FOUND: room code does not exist
+    - PLAYER_NOT_IN_ROOM: participant does not belong to room
+    - HOST_ONLY: start attempted by non-host
+    - NOT_ENOUGH_PLAYERS: start attempted with fewer than 2 participants
+    - INVALID_STATE: room is not in a lobby state for start
+    - START_FAILED: unexpected start failure fallback
 paths:
   /rooms:
     post:
@@ -30,6 +39,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation:
+                  value:
+                    message: Player name is required
+                    code: VALIDATION_ERROR
   /rooms/{code}/join:
     post:
       summary: Join existing room
@@ -69,6 +83,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    message: Room code is invalid or room does not exist
+                    code: ROOM_NOT_FOUND
   /rooms/{code}:
     get:
       summary: Fetch room snapshot (polling)
@@ -100,6 +119,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                notFound:
+                  value:
+                    message: Unable to load room
+                    code: ROOM_NOT_FOUND
   /rooms/{code}/start:
     post:
       summary: Start game (host only, minimum 2 players)
@@ -136,24 +160,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation:
+                  value:
+                    message: participantId is required
+                    code: VALIDATION_ERROR
         '403':
           description: Host-only restriction
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                hostOnly:
+                  value:
+                    message: Only the host can start the game
+                    code: HOST_ONLY
         '404':
           description: Room or participant not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                roomOrParticipantMissing:
+                  value:
+                    message: Room or participant not found
+                    code: PLAYER_NOT_IN_ROOM
         '409':
           description: Preconditions not met (min players or invalid state)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                minimumPlayers:
+                  value:
+                    message: At least 2 players are required to start
+                    code: NOT_ENOUGH_PLAYERS
+                invalidState:
+                  value:
+                    message: Room is not in a startable state
+                    code: INVALID_STATE
 components:
   schemas:
     Participant:
@@ -198,3 +246,11 @@ components:
           type: string
         code:
           type: string
+          enum:
+            - VALIDATION_ERROR
+            - ROOM_NOT_FOUND
+            - PLAYER_NOT_IN_ROOM
+            - HOST_ONLY
+            - NOT_ENOUGH_PLAYERS
+            - INVALID_STATE
+            - START_FAILED

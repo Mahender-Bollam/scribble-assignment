@@ -16,11 +16,11 @@ Implement and validate Feature Group 1:
 
 ## Validation Steps
 1. Create room in Browser A with valid name.
-2. Confirm creator appears as host in lobby state.
+2. Confirm creator appears as host in lobby participant list (Host label).
 3. Attempt create/join with empty or whitespace name; verify clear error message.
-4. Join same room from Browser B with valid room code; verify lobby auto-updates in about 2 seconds in both browsers.
+4. Join same room from Browser B with valid room code; verify lobby auto-updates in about 2 seconds in both browsers without clicking Refresh.
 5. Create second room in Browser C; verify participants from room C never appear in room A/B.
-6. Attempt start as non-host; verify host-only error.
+6. Attempt start as non-host; verify button is not enabled for starting and host-only error is shown if request is attempted.
 7. Attempt start as host with only one player; verify minimum-player error.
 8. Start as host with two players; verify room status transitions from lobby and appears to both participants via polling.
 

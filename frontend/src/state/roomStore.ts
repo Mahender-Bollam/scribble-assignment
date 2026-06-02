@@ -89,12 +89,41 @@ class RoomStore {
     return response;
   }
 
-  async fetchRoom() {
+  async fetchRoom(options?: { silent?: boolean }) {
     if (!this.state.room) {
       return null;
     }
 
-    const response = await api.fetchRoom(this.state.room.code, this.state.participantId ?? undefined);
+    const silent = options?.silent ?? false;
+
+    if (!silent) {
+      this.setState({
+        isLoading: true,
+        error: null
+      });
+    }
+
+    try {
+      const response = await api.fetchRoom(this.state.room.code, this.state.participantId ?? undefined);
+      this.setRoomSnapshot(response.room);
+      return response.room;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to fetch room";
+      this.setState({ error: message });
+      throw error;
+    } finally {
+      if (!silent) {
+        this.setState({ isLoading: false });
+      }
+    }
+  }
+
+  async startGame() {
+    if (!this.state.room || !this.state.participantId) {
+      throw new Error("Room session is missing");
+    }
+
+    const response = await this.withLoading(() => api.startGame(this.state.room!.code, this.state.participantId!));
     this.setRoomSnapshot(response.room);
     return response.room;
   }

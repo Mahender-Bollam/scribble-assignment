@@ -39,3 +39,13 @@
 - Rationale: Frontend already consumes `message`; adding `code` improves deterministic UI behavior without breaking compatibility.
 - Alternatives considered:
   - Message-only responses: acceptable but less reliable for condition-specific UI treatment.
+
+## Validation Notes
+- Backend build validation: PASS (`npm run build`)
+- Frontend build validation: PASS (`npm run build`)
+- Manual multi-tab walkthrough: PASS
+  - Created room as `HostAlpha`; host label shown in lobby participant list.
+  - Joined same room as `GuestBeta` from second tab; participant list synced in both tabs.
+  - Non-host start request returned `403` with `HOST_ONLY` code.
+  - Host start request returned `200` and transitioned room status to `playing`.
+  - Repeated start attempt returned `409` (`Room is not in a startable state`) confirming state-gating behavior.
