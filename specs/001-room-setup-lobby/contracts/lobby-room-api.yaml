@@ -1,0 +1,200 @@
+openapi: 3.0.3
+info:
+  title: Scribble Room Setup and Lobby API
+  version: 0.1.0
+paths:
+  /rooms:
+    post:
+      summary: Create room and host participant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerName]
+              properties:
+                playerName:
+                  type: string
+                  minLength: 1
+      responses:
+        '201':
+          description: Room created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomSessionResponse'
+        '400':
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /rooms/{code}/join:
+    post:
+      summary: Join existing room
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerName]
+              properties:
+                playerName:
+                  type: string
+                  minLength: 1
+      responses:
+        '200':
+          description: Joined room
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomSessionResponse'
+        '400':
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Room not found / cannot join
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /rooms/{code}:
+    get:
+      summary: Fetch room snapshot (polling)
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: participantId
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Room snapshot
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [room]
+                properties:
+                  room:
+                    $ref: '#/components/schemas/RoomSnapshot'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /rooms/{code}/start:
+    post:
+      summary: Start game (host only, minimum 2 players)
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [participantId]
+              properties:
+                participantId:
+                  type: string
+      responses:
+        '200':
+          description: Game started
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [room]
+                properties:
+                  room:
+                    $ref: '#/components/schemas/RoomSnapshot'
+        '400':
+          description: Invalid start request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Host-only restriction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Room or participant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Preconditions not met (min players or invalid state)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Participant:
+      type: object
+      required: [id, name, isHost, joinedAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        isHost:
+          type: boolean
+        joinedAt:
+          type: string
+          format: date-time
+    RoomSnapshot:
+      type: object
+      required: [code, status, participants]
+      properties:
+        code:
+          type: string
+        status:
+          type: string
+          enum: [lobby, playing]
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+    RoomSessionResponse:
+      type: object
+      required: [participantId, room]
+      properties:
+        participantId:
+          type: string
+        room:
+          $ref: '#/components/schemas/RoomSnapshot'
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        code:
+          type: string
