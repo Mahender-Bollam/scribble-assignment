@@ -1,0 +1,152 @@
+openapi: 3.0.3
+info:
+  title: Scribble Result and Restart API
+  version: 0.1.0
+  description: |
+    Feature Group 4 contract for final results projection, restart authorization,
+    lifecycle reset behavior, and final validation semantics.
+paths:
+  /rooms/{code}:
+    get:
+      summary: Poll room snapshot with final result and restart eligibility
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: participantId
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Room snapshot including lifecycle, scores, and optional finalized result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomSnapshotResponse"
+        "404":
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /rooms/{code}/restart:
+    post:
+      summary: Restart game from finalized results stage
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestartRequest"
+      responses:
+        "200":
+          description: Restart accepted and fresh room snapshot returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoomSnapshotResponse"
+        "403":
+          description: Requester is not host
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Restart attempted outside finalized results state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    RestartRequest:
+      type: object
+      required: [participantId]
+      properties:
+        participantId:
+          type: string
+    FinalRankingEntry:
+      type: object
+      required: [participantId, participantName, score, rank]
+      properties:
+        participantId:
+          type: string
+        participantName:
+          type: string
+        score:
+          type: integer
+        rank:
+          type: integer
+    FinalResult:
+      type: object
+      required: [rankings, topScore, winnerParticipantIds, isTie, finalizedAt]
+      properties:
+        rankings:
+          type: array
+          items:
+            $ref: "#/components/schemas/FinalRankingEntry"
+        topScore:
+          type: integer
+        winnerParticipantIds:
+          type: array
+          items:
+            type: string
+        isTie:
+          type: boolean
+        finalizedAt:
+          type: string
+          format: date-time
+    RoomSnapshot:
+      type: object
+      required: [code, status, participants, scores, canRestart, result]
+      properties:
+        code:
+          type: string
+        status:
+          type: string
+          enum: [lobby, playing, results]
+        participants:
+          type: array
+          items:
+            type: object
+        scores:
+          type: object
+          additionalProperties:
+            type: integer
+        canRestart:
+          type: boolean
+        result:
+          oneOf:
+            - $ref: "#/components/schemas/FinalResult"
+            - type: "null"
+    RoomSnapshotResponse:
+      type: object
+      required: [room]
+      properties:
+        room:
+          $ref: "#/components/schemas/RoomSnapshot"
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - ROOM_NOT_FOUND
+            - PLAYER_NOT_IN_ROOM
+            - HOST_ONLY
+            - INVALID_STATE
+            - RESTART_REJECTED
