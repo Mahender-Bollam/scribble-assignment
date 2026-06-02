@@ -9,6 +9,12 @@ import {
 } from "react";
 import { api, type RoomSessionResponse, type RoomSnapshot } from "../services/api";
 
+export interface GameplayViewModel {
+  isDrawer: boolean;
+  drawerName: string;
+  scoreByParticipantId: Record<string, number>;
+}
+
 export interface RoomState {
   room: RoomSnapshot | null;
   participantId: string | null;
@@ -140,6 +146,54 @@ class RoomStore {
     this.setRoomSnapshot(response.room);
     return response.room;
   }
+
+  async submitStroke(input: { x: number; y: number; color: string; size: number }) {
+    if (!this.state.room || !this.state.participantId) {
+      throw new Error("Room session is missing");
+    }
+
+    const response = await api.submitStroke(this.state.room.code, {
+      participantId: this.state.participantId,
+      x: input.x,
+      y: input.y,
+      color: input.color,
+      size: input.size
+    });
+
+    this.setRoomSnapshot(response.room);
+    return response.room;
+  }
+
+  async clearCanvas() {
+    const activeRoom = this.state.room;
+    const participantId = this.state.participantId;
+
+    if (!activeRoom || !participantId) {
+      throw new Error("Room session is missing");
+    }
+
+    const response = await this.withLoading(() => api.clearCanvas(activeRoom.code, participantId));
+    this.setRoomSnapshot(response.room);
+    return response.room;
+  }
+
+  async submitGuess(text: string) {
+    const activeRoom = this.state.room;
+    const participantId = this.state.participantId;
+
+    if (!activeRoom || !participantId) {
+      throw new Error("Room session is missing");
+    }
+
+    const trimmedText = text.trim();
+    if (!trimmedText) {
+      throw new Error("Guess is required");
+    }
+
+    const response = await this.withLoading(() => api.submitGuess(activeRoom.code, participantId, trimmedText));
+    this.setRoomSnapshot(response.room);
+    return response.room;
+  }
 }
 
 const RoomStoreContext = createContext<RoomStore | null>(null);
@@ -169,4 +223,24 @@ export function useRoomStore() {
 export function useRoomState() {
   const store = useRoomStore();
   return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+}
+
+export function useGameplayViewModel() {
+  const { room, participantId } = useRoomState();
+
+  if (!room || !participantId) {
+    return {
+      isDrawer: false,
+      drawerName: "Unassigned",
+      scoreByParticipantId: {}
+    } satisfies GameplayViewModel;
+  }
+
+  const drawerName = room.participants.find((participant) => participant.id === room.drawerParticipantId)?.name ?? "Unassigned";
+
+  return {
+    isDrawer: room.viewerRole === "drawer",
+    drawerName,
+    scoreByParticipantId: room.scores
+  } satisfies GameplayViewModel;
 }

@@ -11,6 +11,11 @@ export const STARTER_WORDS = [
 export const STARTER_ROLES: ParticipantRole[] = ["drawer", "guesser"];
 
 export const WORD_HASH_MULTIPLIER = 31;
+export const CORRECT_GUESS_POINTS = 10;
+export const DRAWER_ROUND_POINTS = 5;
+export const MAX_GUESS_LENGTH = 64;
+export const DEFAULT_STROKE_COLOR = "#111827";
+export const DEFAULT_STROKE_SIZE = 4;
 
 export function buildWordSeed(roomCode: string, createdAt: string) {
   return `${roomCode}:${createdAt}`;

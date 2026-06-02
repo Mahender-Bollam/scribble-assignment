@@ -1,15 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../components/Card";
+import { DrawingCanvas } from "../components/DrawingCanvas";
 import { GuessForm } from "../components/GuessForm";
+import { GuessHistory } from "../components/GuessHistory";
 import { ResultPanel } from "../components/ResultPanel";
 import { RoomCodeBadge } from "../components/RoomCodeBadge";
 import { Scoreboard } from "../components/Scoreboard";
-import { useRoomState } from "../state/roomStore";
+import { useGameplayViewModel, useRoomState, useRoomStore } from "../state/roomStore";
 
 export function GamePage() {
   const navigate = useNavigate();
-  const { room, participantId } = useRoomState();
+  const roomStore = useRoomStore();
+  const { room, participantId, error, isLoading } = useRoomState();
+  const { isDrawer, drawerName } = useGameplayViewModel();
+  const [localError, setLocalError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!room) {
@@ -17,14 +22,56 @@ export function GamePage() {
     }
   }, [navigate, room]);
 
+  useEffect(() => {
+    if (!room || room.status !== "playing") {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      void roomStore.fetchRoom({ silent: true }).catch((caughtError) => {
+        setLocalError(caughtError instanceof Error ? caughtError.message : "Unable to refresh game state");
+      });
+    }, 2000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [room?.code, room?.status, roomStore]);
+
   if (!room) {
     return null;
   }
 
   const viewer = room.participants.find((participant) => participant.id === participantId) ?? null;
-  const isDrawer = room.viewerRole === "drawer";
   const isGuesser = room.viewerRole === "guesser";
   const roleLabel = isDrawer ? "Drawer" : isGuesser ? "Guesser" : "Spectator";
+
+  async function handleSubmitStroke(stroke: { x: number; y: number; color: string; size: number }) {
+    try {
+      setLocalError(null);
+      await roomStore.submitStroke(stroke);
+    } catch (caughtError) {
+      setLocalError(caughtError instanceof Error ? caughtError.message : "Unable to draw");
+    }
+  }
+
+  async function handleClearCanvas() {
+    try {
+      setLocalError(null);
+      await roomStore.clearCanvas();
+    } catch (caughtError) {
+      setLocalError(caughtError instanceof Error ? caughtError.message : "Unable to clear canvas");
+    }
+  }
+
+  async function handleSubmitGuess(guess: string) {
+    try {
+      setLocalError(null);
+      await roomStore.submitGuess(guess);
+    } catch (caughtError) {
+      setLocalError(caughtError instanceof Error ? caughtError.message : "Unable to submit guess");
+    }
+  }
 
   return (
     <section className="panel game-page">
@@ -40,13 +87,19 @@ export function GamePage() {
         <aside className="game-page__sidebar game-page__sidebar--left">
           <Scoreboard />
           <ResultPanel />
+          <GuessHistory />
         </aside>
 
         <div className="game-page__main">
           <Card title="Canvas">
-            <div className="canvas-placeholder" style={{ minHeight: '500px', backgroundColor: '#ffffff', border: '1px solid #e5e7eb' }}>
-              {isDrawer ? "You are drawing this round." : "Guess what the drawer is sketching."}
+            <DrawingCanvas strokes={room.canvas.strokes} disabled={!isDrawer || isLoading} onStroke={handleSubmitStroke} />
+            <div className="button-row button-row--compact">
+              <button className="button button--secondary" onClick={handleClearCanvas} disabled={!isDrawer || isLoading}>
+                Clear Canvas
+              </button>
             </div>
+            <p>{isDrawer ? "You are drawing this round." : `${drawerName} is drawing this round.`}</p>
+            {error || localError ? <p className="form__error">{error ?? localError}</p> : null}
           </Card>
         </div>
 
@@ -75,7 +128,7 @@ export function GamePage() {
           </Card>
 
           <Card title="Your Guess">
-            <GuessForm />
+            <GuessForm disabled={isDrawer || isLoading} onSubmitGuess={handleSubmitGuess} error={error ?? localError} />
           </Card>
         </aside>
       </div>

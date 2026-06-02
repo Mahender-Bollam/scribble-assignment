@@ -20,6 +20,23 @@ export const roomViewerQuerySchema = z.object({
   participantId: z.string().trim().min(1).optional()
 });
 
+export const drawStrokeSchema = z.object({
+  participantId: z.string().trim().min(1, "participantId is required").max(128),
+  x: z.number().finite(),
+  y: z.number().finite(),
+  color: z.string().trim().min(1, "color is required").max(24),
+  size: z.number().finite().min(1).max(32)
+});
+
+export const clearCanvasSchema = z.object({
+  participantId: z.string().trim().min(1, "participantId is required").max(128)
+});
+
+export const submitGuessSchema = z.object({
+  participantId: z.string().trim().min(1, "participantId is required").max(128),
+  text: z.string().trim().min(1, "Guess is required").max(64, "Guess is too long")
+});
+
 export class HttpError extends Error {
   statusCode: number;
   code?: string;

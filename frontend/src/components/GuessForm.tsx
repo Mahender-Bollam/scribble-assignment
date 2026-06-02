@@ -2,13 +2,26 @@ import { useState } from "react";
 
 interface GuessFormProps {
   disabled?: boolean;
+  error?: string | null;
+  onSubmitGuess: (guess: string) => Promise<void>;
 }
 
-export function GuessForm({ disabled = false }: GuessFormProps) {
+export function GuessForm({ disabled = false, error = null, onSubmitGuess }: GuessFormProps) {
   const [guessText, setGuessText] = useState("");
+  const [localError, setLocalError] = useState<string | null>(null);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const trimmedGuess = guessText.trim();
+    if (!trimmedGuess) {
+      setLocalError("Enter a guess before submitting.");
+      return;
+    }
+
+    setLocalError(null);
+    await onSubmitGuess(trimmedGuess);
+    setGuessText("");
   }
 
   return (
@@ -27,6 +40,7 @@ export function GuessForm({ disabled = false }: GuessFormProps) {
           Submit Guess
         </button>
       </div>
+      {localError || error ? <p className="form__error">{localError ?? error}</p> : null}
     </form>
   );
 }

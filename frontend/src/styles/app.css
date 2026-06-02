@@ -451,6 +451,65 @@ input {
   font-weight: 500;
 }
 
+.drawing-canvas {
+  position: relative;
+  min-height: 500px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+.drawing-canvas__point {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.drawing-canvas__hint {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.guess-history {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.guess-history__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.guess-history__item--correct {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.guess-history__empty {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
 /* --- GAME PAGE LAYOUT --- */
 /* Changed layout structure to be much wider and utilize screen space */
 .game-page {

@@ -12,8 +12,8 @@
 
 **Purpose**: Align feature artifacts and contract baseline before coding.
 
-- [ ] T001 Validate and finalize gameplay contract definitions in specs/003-gameplay-interaction/contracts/gameplay-interaction-api.yaml
-- [ ] T002 Sync feature assumptions and validation flow across specs/003-gameplay-interaction/spec.md and specs/003-gameplay-interaction/plan.md and specs/003-gameplay-interaction/quickstart.md
+- [X] T001 Validate and finalize gameplay contract definitions in specs/003-gameplay-interaction/contracts/gameplay-interaction-api.yaml
+- [X] T002 Sync feature assumptions and validation flow across specs/003-gameplay-interaction/spec.md and specs/003-gameplay-interaction/plan.md and specs/003-gameplay-interaction/quickstart.md
 
 ---
 
@@ -23,13 +23,13 @@
 
 **CRITICAL**: Complete this phase before starting user story implementation.
 
-- [ ] T003 Extend room and snapshot domain types with gameplay state fields in backend/src/models/game.ts
-- [ ] T004 [P] Define gameplay constants and deterministic score rule values in backend/src/seed/starterData.ts
-- [ ] T005 Add request schemas for stroke, clear-canvas, and guess submission in backend/src/api/schemas.ts
-- [ ] T006 Refactor room store base gameplay state initialization in backend/src/services/roomStore.ts
-- [ ] T007 [P] Extend frontend room snapshot contracts for canvas, guess history, and scores in frontend/src/services/api.ts
-- [ ] T008 [P] Add frontend state support for gameplay snapshot updates in frontend/src/state/roomStore.ts
-- [ ] T009 Add shared frontend gameplay view-model helpers in frontend/src/state/roomStore.ts
+- [X] T003 Extend room and snapshot domain types with gameplay state fields in backend/src/models/game.ts
+- [X] T004 [P] Define gameplay constants and deterministic score rule values in backend/src/seed/starterData.ts
+- [X] T005 Add request schemas for stroke, clear-canvas, and guess submission in backend/src/api/schemas.ts
+- [X] T006 Refactor room store base gameplay state initialization in backend/src/services/roomStore.ts
+- [X] T007 [P] Extend frontend room snapshot contracts for canvas, guess history, and scores in frontend/src/services/api.ts
+- [X] T008 [P] Add frontend state support for gameplay snapshot updates in frontend/src/state/roomStore.ts
+- [X] T009 Add shared frontend gameplay view-model helpers in frontend/src/state/roomStore.ts
 
 **Checkpoint**: Foundation ready for independent user story delivery.
 
@@ -43,13 +43,13 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Add stroke append and canvas clear mutation methods in backend/src/services/roomStore.ts
-- [ ] T011 [US1] Add POST /rooms/:code/canvas/strokes and POST /rooms/:code/canvas/clear routes in backend/src/api/rooms.ts
-- [ ] T012 [US1] Enforce drawer-only clear and playing-state guards in backend/src/services/roomStore.ts
-- [ ] T013 [P] [US1] Add API client methods for stroke and clear actions in frontend/src/services/api.ts
-- [ ] T014 [US1] Add room store actions for submitStroke and clearCanvas in frontend/src/state/roomStore.ts
-- [ ] T015 [P] [US1] Create interactive drawing canvas component in frontend/src/components/DrawingCanvas.tsx
-- [ ] T016 [US1] Integrate drawing and clear controls into frontend/src/pages/GamePage.tsx
+- [X] T010 [US1] Add stroke append and canvas clear mutation methods in backend/src/services/roomStore.ts
+- [X] T011 [US1] Add POST /rooms/:code/canvas/strokes and POST /rooms/:code/canvas/clear routes in backend/src/api/rooms.ts
+- [X] T012 [US1] Enforce drawer-only clear and playing-state guards in backend/src/services/roomStore.ts
+- [X] T013 [P] [US1] Add API client methods for stroke and clear actions in frontend/src/services/api.ts
+- [X] T014 [US1] Add room store actions for submitStroke and clearCanvas in frontend/src/state/roomStore.ts
+- [X] T015 [P] [US1] Create interactive drawing canvas component in frontend/src/components/DrawingCanvas.tsx
+- [X] T016 [US1] Integrate drawing and clear controls into frontend/src/pages/GamePage.tsx
 
 **Checkpoint**: Canvas interaction and clear propagation are fully functional.
 
@@ -63,12 +63,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Implement backend guess validation and normalization logic in backend/src/services/roomStore.ts
-- [ ] T018 [US2] Add POST /rooms/:code/guesses route with domain error mapping in backend/src/api/rooms.ts
-- [ ] T019 [US2] Expand guess submission schema constraints and messages in backend/src/api/schemas.ts
-- [ ] T020 [P] [US2] Add guess submission API method in frontend/src/services/api.ts
-- [ ] T021 [US2] Wire validated guess submission flow in frontend/src/components/GuessForm.tsx and frontend/src/pages/GamePage.tsx
-- [ ] T022 [US2] Propagate guess validation errors through frontend store state in frontend/src/state/roomStore.ts
+- [X] T017 [US2] Implement backend guess validation and normalization logic in backend/src/services/roomStore.ts
+- [X] T018 [US2] Add POST /rooms/:code/guesses route with domain error mapping in backend/src/api/rooms.ts
+- [X] T019 [US2] Expand guess submission schema constraints and messages in backend/src/api/schemas.ts
+- [X] T020 [P] [US2] Add guess submission API method in frontend/src/services/api.ts
+- [X] T021 [US2] Wire validated guess submission flow in frontend/src/components/GuessForm.tsx and frontend/src/pages/GamePage.tsx
+- [X] T022 [US2] Propagate guess validation errors through frontend store state in frontend/src/state/roomStore.ts
 
 **Checkpoint**: Guess submission and validation behavior is complete and independently testable.
 
@@ -82,12 +82,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Persist ordered guess history entries in room state in backend/src/services/roomStore.ts
-- [ ] T024 [US3] Include guess history in room snapshot projection in backend/src/services/roomStore.ts
-- [ ] T025 [US3] Ensure polling GET /rooms/:code returns gameplay history fields in backend/src/api/rooms.ts
-- [ ] T026 [P] [US3] Add guess history rendering component in frontend/src/components/GuessHistory.tsx
-- [ ] T027 [US3] Integrate guess history panel with polling updates in frontend/src/pages/GamePage.tsx
-- [ ] T028 [US3] Ensure polling refresh keeps history state consistent in frontend/src/state/roomStore.ts
+- [X] T023 [US3] Persist ordered guess history entries in room state in backend/src/services/roomStore.ts
+- [X] T024 [US3] Include guess history in room snapshot projection in backend/src/services/roomStore.ts
+- [X] T025 [US3] Ensure polling GET /rooms/:code returns gameplay history fields in backend/src/api/rooms.ts
+- [X] T026 [P] [US3] Add guess history rendering component in frontend/src/components/GuessHistory.tsx
+- [X] T027 [US3] Integrate guess history panel with polling updates in frontend/src/pages/GamePage.tsx
+- [X] T028 [US3] Ensure polling refresh keeps history state consistent in frontend/src/state/roomStore.ts
 
 **Checkpoint**: Guess history sync is stable and consistent across participants.
 
@@ -101,11 +101,11 @@
 
 ### Implementation for User Story 4
 
-- [ ] T029 [US4] Implement deterministic score calculation rules in backend/src/services/roomStore.ts
-- [ ] T030 [US4] Enforce idempotent score awarding for repeated correct-guess events in backend/src/services/roomStore.ts
-- [ ] T031 [US4] Include scores in room snapshot output and route responses in backend/src/services/roomStore.ts and backend/src/api/rooms.ts
-- [ ] T032 [P] [US4] Extend frontend room contracts and state for score maps in frontend/src/services/api.ts and frontend/src/state/roomStore.ts
-- [ ] T033 [US4] Render deterministic scoreboard values from polling snapshots in frontend/src/components/Scoreboard.tsx and frontend/src/pages/GamePage.tsx
+- [X] T029 [US4] Implement deterministic score calculation rules in backend/src/services/roomStore.ts
+- [X] T030 [US4] Enforce idempotent score awarding for repeated correct-guess events in backend/src/services/roomStore.ts
+- [X] T031 [US4] Include scores in room snapshot output and route responses in backend/src/services/roomStore.ts and backend/src/api/rooms.ts
+- [X] T032 [P] [US4] Extend frontend room contracts and state for score maps in frontend/src/services/api.ts and frontend/src/state/roomStore.ts
+- [X] T033 [US4] Render deterministic scoreboard values from polling snapshots in frontend/src/components/Scoreboard.tsx and frontend/src/pages/GamePage.tsx
 
 **Checkpoint**: Deterministic scoring is fully implemented and visible to all participants.
 
@@ -115,9 +115,9 @@
 
 **Purpose**: Final consistency checks, documentation updates, and end-to-end validation.
 
-- [ ] T034 [P] Update gameplay walkthrough and acceptance steps in specs/003-gameplay-interaction/quickstart.md
-- [ ] T035 Validate cross-artifact consistency in specs/003-gameplay-interaction/spec.md and specs/003-gameplay-interaction/plan.md and specs/003-gameplay-interaction/tasks.md and specs/003-gameplay-interaction/contracts/gameplay-interaction-api.yaml
-- [ ] T036 Run backend and frontend build and test commands and record results in specs/003-gameplay-interaction/plan.md
+- [X] T034 [P] Update gameplay walkthrough and acceptance steps in specs/003-gameplay-interaction/quickstart.md
+- [X] T035 Validate cross-artifact consistency in specs/003-gameplay-interaction/spec.md and specs/003-gameplay-interaction/plan.md and specs/003-gameplay-interaction/tasks.md and specs/003-gameplay-interaction/contracts/gameplay-interaction-api.yaml
+- [X] T036 Run backend and frontend build and test commands and record results in specs/003-gameplay-interaction/plan.md
 
 ---
 
