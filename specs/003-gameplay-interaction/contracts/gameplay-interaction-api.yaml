@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: Scribble Gameplay Interaction API
+  version: 0.1.0
+  description: |
+    Feature Group 3 contract for drawing, clearing canvas, guess submission,
+    polling synchronization, and deterministic scoring.
+paths:
+  /rooms/{code}/canvas/strokes:
+    post:
+      summary: Submit a drawing stroke
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StrokeInput'
+      responses:
+        '200':
+          description: Stroke accepted and snapshot returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomSnapshotResponse'
+        '400':
+          description: Invalid stroke payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Invalid game state for drawing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /rooms/{code}/canvas/clear:
+    post:
+      summary: Clear current room canvas
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [participantId]
+              properties:
+                participantId:
+                  type: string
+      responses:
+        '200':
+          description: Canvas cleared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomSnapshotResponse'
+        '403':
+          description: Drawer-only action violation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /rooms/{code}/guesses:
+    post:
+      summary: Submit a guess
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GuessInput'
+      responses:
+        '200':
+          description: Guess accepted and snapshot returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomSnapshotResponse'
+        '400':
+          description: Invalid guess input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /rooms/{code}:
+    get:
+      summary: Poll room gameplay snapshot
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: participantId
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Room snapshot with gameplay state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomSnapshotResponse'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    StrokeInput:
+      type: object
+      required: [participantId, x, y, color, size]
+      properties:
+        participantId:
+          type: string
+        x:
+          type: number
+        y:
+          type: number
+        color:
+          type: string
+        size:
+          type: number
+    GuessInput:
+      type: object
+      required: [participantId, text]
+      properties:
+        participantId:
+          type: string
+        text:
+          type: string
+          minLength: 1
+    GuessEntry:
+      type: object
+      required: [id, participantId, participantName, text, isCorrect, createdAt, order]
+      properties:
+        id:
+          type: string
+        participantId:
+          type: string
+        participantName:
+          type: string
+        text:
+          type: string
+        isCorrect:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        order:
+          type: integer
+    CanvasState:
+      type: object
+      required: [strokes, version]
+      properties:
+        strokes:
+          type: array
+          items:
+            type: object
+        lastClearedAt:
+          type: string
+          nullable: true
+          format: date-time
+        version:
+          type: integer
+    RoomSnapshot:
+      type: object
+      required: [code, status, participants, drawerParticipantId, viewerRole, canvas, guessHistory, scores]
+      properties:
+        code:
+          type: string
+        status:
+          type: string
+          enum: [lobby, playing]
+        participants:
+          type: array
+          items:
+            type: object
+        drawerParticipantId:
+          type: string
+          nullable: true
+        viewerRole:
+          type: string
+          nullable: true
+          enum: [drawer, guesser]
+        secretWord:
+          type: string
+          description: Present only for drawer snapshots
+        canvas:
+          $ref: '#/components/schemas/CanvasState'
+        guessHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/GuessEntry'
+        scores:
+          type: object
+          additionalProperties:
+            type: integer
+    RoomSnapshotResponse:
+      type: object
+      required: [room]
+      properties:
+        room:
+          $ref: '#/components/schemas/RoomSnapshot'
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - ROOM_NOT_FOUND
+            - PLAYER_NOT_IN_ROOM
+            - INVALID_STATE
+            - DRAWER_ONLY
+            - GUESS_REJECTED
