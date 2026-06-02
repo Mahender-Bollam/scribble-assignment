@@ -1,0 +1,177 @@
+openapi: 3.0.3
+info:
+  title: Scribble Game Start and Drawer Flow API
+  version: 0.1.0
+  description: |
+    Error code mapping used by this feature:
+    - VALIDATION_ERROR: request schema failed
+    - ROOM_NOT_FOUND: room code does not exist
+    - PLAYER_NOT_IN_ROOM: participant does not belong to room
+    - HOST_ONLY: start attempted by non-host
+    - NOT_ENOUGH_PLAYERS: start attempted with fewer than 2 participants
+    - INVALID_STATE: room is not in a startable state
+    - START_FAILED: unexpected start failure fallback
+paths:
+  /rooms/{code}/start:
+    post:
+      summary: Start game with deterministic drawer and secret-word assignment
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [participantId]
+              properties:
+                participantId:
+                  type: string
+      responses:
+        '200':
+          description: Game started
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [room]
+                properties:
+                  room:
+                    $ref: '#/components/schemas/RoomSnapshot'
+        '400':
+          description: Invalid payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation:
+                  value:
+                    message: participantId is required
+                    code: VALIDATION_ERROR
+        '403':
+          description: Host-only restriction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                hostOnly:
+                  value:
+                    message: Only the host can start the game
+                    code: HOST_ONLY
+        '404':
+          description: Room or participant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                roomOrParticipantMissing:
+                  value:
+                    message: Room or participant not found
+                    code: PLAYER_NOT_IN_ROOM
+        '409':
+          description: Invalid state or minimum-player precondition failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                minimumPlayers:
+                  value:
+                    message: At least 2 players are required to start
+                    code: NOT_ENOUGH_PLAYERS
+                invalidState:
+                  value:
+                    message: Room is not in a startable state
+                    code: INVALID_STATE
+  /rooms/{code}:
+    get:
+      summary: Fetch room snapshot with viewer-specific secret-word visibility
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: participantId
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Room snapshot
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [room]
+                properties:
+                  room:
+                    $ref: '#/components/schemas/RoomSnapshot'
+        '404':
+          description: Room not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    Participant:
+      type: object
+      required: [id, name, isHost, joinedAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        isHost:
+          type: boolean
+        joinedAt:
+          type: string
+          format: date-time
+    RoomSnapshot:
+      type: object
+      required: [code, status, participants, drawerParticipantId, viewerRole]
+      properties:
+        code:
+          type: string
+        status:
+          type: string
+          enum: [lobby, playing]
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+        drawerParticipantId:
+          type: string
+          nullable: true
+        viewerRole:
+          type: string
+          nullable: true
+          enum: [drawer, guesser, null]
+        secretWord:
+          type: string
+          description: Present only for drawer snapshots while playing
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+        code:
+          type: string
+          enum:
+            - VALIDATION_ERROR
+            - ROOM_NOT_FOUND
+            - PLAYER_NOT_IN_ROOM
+            - HOST_ONLY
+            - NOT_ENOUGH_PLAYERS
+            - INVALID_STATE
+            - START_FAILED
